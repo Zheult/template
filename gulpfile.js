@@ -13,8 +13,10 @@ var isEnvironment = function (type) {
     return gutil.env.type === type;
 };
 
+var isEnvironmentProduction = isEnvironment('production');
+
 var staticPath = './public';
-var serverPort = isEnvironment('production') ? 80 : 3000;
+var serverPort = isEnvironmentProduction ? 80 : 3000;
 
 var paths = {
     js: {
@@ -44,8 +46,8 @@ gulp.task('build', ['build:js', 'build:sass']);
 gulp.task('build:js', ['clean:js', 'jshint'], function () {
     return gulp.src(paths.js.input)
         .pipe(sourcemaps.init())
-        .pipe(isEnvironment('production') ? concat('bundle.js') : gutil.noop())
-        .pipe(isEnvironment('production') ? uglify() : gutil.noop())
+        .pipe(isEnvironmentProduction ? concat('bundle.js') : gutil.noop())
+        .pipe(isEnvironmentProduction ? uglify() : gutil.noop())
         .pipe(sourcemaps.write())
         .pipe(gulp.dest(paths.js.output));
 });
@@ -59,7 +61,7 @@ gulp.task('jshint', function () {
 gulp.task('build:sass', ['clean:sass'], function () {
     return gulp.src(paths.sass.input)
         .pipe(sourcemaps.init())
-        .pipe(sass({outputStyle: isEnvironment('production') ? 'compressed' : 'nested'})).on('error', sass.logError)
+        .pipe(sass({outputStyle: isEnvironmentProduction ? 'compressed' : 'nested'})).on('error', sass.logError)
         .pipe(sourcemaps.write())
         .pipe(gulp.dest(paths.sass.output));
 });
